@@ -2,12 +2,17 @@ const cacheName = "tricking-lab-cache-v1";
 const assetsToCache = [
   "/",
   "/index.html",
-  "/style.css",
-  "/app.js",
   "/manifest.json",
-  "/icons/icon-192.png",
-  "/icons/icon-512.png"
+  "/askip.mp4",
+  "/bulgarian.mp4",
+  "/calf.mp4",
+  "/sissy.mp4",
+  "/stepups.mp4",
+  "/tib.mp4",
+  "/icon-192.png",
+  "/icon-512.png"
 ];
+
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -35,3 +40,4 @@ self.addEventListener("fetch", event => {
       .then(cached => cached || fetch(event.request))
   );
 });
+
