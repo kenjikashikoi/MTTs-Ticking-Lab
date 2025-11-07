@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MTTs Tricking Lab</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#B71C1C">
+
+  <style>
+    /* Mobile-first App-like styles */
+    :root{--bg:#071026;--card:#0b1220;--accent:#f59e0b;--muted:#9aa4b2;--glass:rgba(255,255,255,0.03);--height:100vh}
+    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6}
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#151922 0%, #071026 100%)}
+    .app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
+
+    .topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter:blur(6px)}
+    .title{font-weight:700;font-size:15px}
+    .subtitle{font-size:12px;color:var(--muted)}
+    .timer{background:var(--glass);padding:6px 10px;border-radius:10px;font-weight:700;font-size:13px;color:var(--muted)}
+
+    .pager{flex:1;position:relative;overflow:hidden}
+    .blocks{display:flex;height:100%;transition:transform .28s ease;will-change:transform}
+    .block{min-width:100%;padding:14px;display:flex;flex-direction:column;gap:12px}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:14px;padding:12px;flex:0 0 auto}
+
+    .block-head{display:flex;justify-content:space-between;align-items:flex-start}
+    .block-head .info{max-width:65%}
+    .block-title{font-size:18px;margin:0}
+    .block-sub{font-size:13px;color:var(--muted);margin-top:6px}
+    .block-meta{text-align:right;font-size:12px;color:var(--muted)}
+
+    .steps-wrap{height:170px;position:relative}
+    .steps{display:flex;height:100%;gap:12px;overflow:hidden;transition:transform .22s ease}
+    .step-card{min-width:86%;background:rgba(255,255,255,0.02);border-radius:12px;padding:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
+    .step-card strong{display:block;margin-bottom:6px}
+    .step-controls{display:flex;gap:8px;align-items:center;justify-content:center;margin-top:8px}
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.06)}
+    .dot.active{background:var(--accent)}
+
+    .video-row{display:flex;gap:8px;overflow:auto;padding-top:6px}
+    .thumb{min-width:100px;border-radius:8px;overflow:hidden;background:#000}
+    .thumb video{width:100px;height:72px;display:block}
+
+    .bottombar{height:72px;padding:10px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));display:flex;align-items:center;gap:10px}
+    .btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:800;background:linear-gradient(180deg,var(--accent),#d97706);color:#08111a}
+    .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:700}
+
+    .progress{height:6px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;margin-top:6px}
+    .progress > i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#f97316);width:0%}
+
+    .small{font-size:13px;color:var(--muted)}
+    @media (min-width:420px){.step-card{min-width:78%}}
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="MTTs Tricking Lab">
+
+    <div class="topbar">
+      <div>
+        <div class="title">MTTs Tricking Lab</div>
+        <div class="subtitle small">3× / Woche · ~23 Min · Einbeiniger Pop + Arm Swing</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="timer" class="timer">00:00</div>
+      </div>
+    </div>
+
+    <main class="pager" id="pager">
+      <div class="blocks" id="blocks">
+        <!-- blocks populated by JS -->
+      </div>
+    </main>
+
+    <div style="padding:10px 12px">
+      <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+    </div>
+
+    <nav class="bottombar" role="navigation" aria-label="Steuerung">
+      <button id="startBtn" class="btn">Training starten</button>
+      <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
+    </nav>
+
+<script>
+// hier kommt dein Trainings-JS (wie vorher) ...
+</script>
+
+<script>
+  // Service Worker Registration
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', ()=>{
+      navigator.serviceWorker.register('service-worker.js').then(reg=>{
+        console.log('Service Worker registered.');
+      }).catch(err=>console.log('SW registration failed:', err));
+    });
+  }
+</script>
+</body>
+</html>
