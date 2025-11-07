@@ -3,16 +3,12 @@ const assetsToCache = [
   "/",
   "/index.html",
   "/manifest.json",
-  "/askip.mp4",
-  "/bulgarian.mp4",
-  "/calf.mp4",
-  "/sissy.mp4",
-  "/stepups.mp4",
-  "/tib.mp4",
-  "/icon-192.png",
-  "/icon-512.png"
+  "/icons/icon-192.png",
+  "/icons/icon-512.png",
+  "/video1.mp4",
+  "/video2.mp4",
+  "/video3.mp4"
 ];
-
 
 self.addEventListener("install", event => {
   event.waitUntil(
@@ -40,4 +36,3 @@ self.addEventListener("fetch", event => {
       .then(cached => cached || fetch(event.request))
   );
 });
-
