@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tricking-lab-cache-v1';
+const CACHE_NAME = 'tricking-lab-cache-v2';
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
@@ -46,3 +46,4 @@ self.addEventListener('fetch', (evt) => {
     })
   );
 });
+
