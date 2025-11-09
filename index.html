@@ -6,7 +6,6 @@
 <title>MTTs Dojo Lab</title>
 
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#f5f0e1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -52,17 +51,17 @@ html,body{height:100%;background:var(--bg);}
 .exercise-title{font-weight:600;font-size:14px;color:var(--accent)}
 .exercise-desc{font-size:12px;color:var(--muted)}
 
-.progress{height:6px;background:rgba(0,0,0,0.05);border-radius:8px;overflow:hidden;margin-top:6px}
-.progress>i{display:block;height:100%;background:var(--accent);width:0%}
-
 .video-row{display:flex;flex-direction:column;gap:8px;margin-top:6px}
 .video-row video{width:100%;height:auto;border-radius:8px;border:2px solid var(--muted)}
 
 .bottombar{height:72px;padding:10px 12px;background:rgba(0,0,0,0.05);display:flex;align-items:center;gap:10px}
 .btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;background:var(--accent);color:var(--bg);transition:transform 0.15s, box-shadow 0.15s;}
 .btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:700}
-
 .btn:active{transform: scale(0.95); box-shadow: 0 0 12px var(--muted);}
+
+/* Drachen Progress */
+.dragon-progress{width:100%;height:50px;overflow:hidden;margin:10px 0}
+#dragonPath{stroke-dasharray:500; stroke-dashoffset:500; stroke-linecap:round; stroke-width:6; fill:none; stroke:#5c4438; transition: stroke-dashoffset 0.5s ease;}
 </style>
 </head>
 <body>
@@ -84,8 +83,11 @@ html,body{height:100%;background:var(--bg);}
   </div>
 </main>
 
-<div style="padding:10px 12px">
-  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+<!-- Drachen Progress -->
+<div class="dragon-progress">
+  <svg viewBox="0 0 500 50" preserveAspectRatio="none">
+    <path id="dragonPath" d="M0,25 Q100,0 200,25 T500,25"/>
+  </svg>
 </div>
 
 <nav class="bottombar" role="navigation" aria-label="Steuerung">
@@ -109,8 +111,8 @@ let trainingSteps=[
 const startBtn=document.getElementById('startBtn');
 const nextBtn=document.getElementById('nextBtn');
 const blocksEl=document.getElementById('blocks');
-const progressBar=document.getElementById('progressBar');
 const timerEl=document.getElementById('timer');
+const dragonPath=document.getElementById('dragonPath');
 
 let currentStep=0;
 let timerInterval=null;
@@ -119,8 +121,12 @@ trainingSteps.forEach(s=>totalTime+=s.duration);
 let elapsedTime=0;
 
 function formatTime(sec){const m=Math.floor(sec/60).toString().padStart(2,'0');const s=(sec%60).toString().padStart(2,'0');return`${m}:${s}`}
-
 function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{elapsedTime++;timerEl.textContent=formatTime(elapsedTime);if(elapsedTime>=totalTime) clearInterval(timerInterval);},1000);}
+
+function updateDragonProgress(stepIndex){
+  const progress=(stepIndex+1)/trainingSteps.length;
+  dragonPath.style.strokeDashoffset = 500*(1-progress);
+}
 
 function showStep(stepIndex){
   const step=trainingSteps[stepIndex];
@@ -145,8 +151,9 @@ function showStep(stepIndex){
     html+=`</div>`;
   }
 
-  html+=`<div class="progress"><i style="width:${((stepIndex+1)/trainingSteps.length)*100}%"></i></div></div>`;
+  html+=`</div>`;
   blocksEl.innerHTML=html;
+  updateDragonProgress(stepIndex);
 }
 
 function playKiai(){kiaiSound.currentTime=0;kiaiSound.play();}
@@ -166,7 +173,8 @@ nextBtn.addEventListener("click",()=>{
     nextBtn.style.display="none";
     startBtn.style.display="block";
     blocksEl.innerHTML="<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
-    progressBar.style.width="0%";timerEl.textContent="00:00";elapsedTime=0;
+    dragonPath.style.strokeDashoffset=500;
+    timerEl.textContent="00:00";elapsedTime=0;
   }
 });
 
