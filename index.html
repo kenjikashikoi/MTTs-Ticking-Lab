@@ -7,7 +7,7 @@
 
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="theme-color" content="#2b1e0f">
+<meta name="theme-color" content="#f5f0e1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -15,13 +15,18 @@
 
 <style>
 :root{
-  --bg:#2b1e0f; --card:#3b2a16; --accent:#d4af37; --muted:#f5e3c0; --glass:rgba(255,255,255,0.05);
+  --bg:#f5f0e1;       /* heller Beigeton */
+  --card:#ece3d8;     /* leicht dunkleres Beige */
+  --accent:#5c4438;   /* dunkles Braun */
+  --muted:#7a6b60;    /* gedämpftes Braun für Untertexte */
+  --glass:rgba(255,255,255,0.3);
 }
-*{box-sizing:border-box;font-family:'Noto Sans SC',sans-serif;color:var(--muted);margin:0;padding:0;}
-html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)}
+
+*{box-sizing:border-box;font-family:'Noto Sans SC',sans-serif;color:var(--accent);margin:0;padding:0;}
+html,body{height:100%;background:var(--bg);}
 .app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
 
-.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(0,0,0,0.2);backdrop-filter:blur(4px)}
+.topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(0,0,0,0.05);backdrop-filter:blur(4px)}
 .title{font-weight:700;font-size:18px;color:var(--accent)}
 .subtitle{font-size:12px;color:var(--muted)}
 .timer{background:var(--glass);padding:6px 10px;border-radius:10px;font-weight:700;font-size:13px;color:var(--accent)}
@@ -30,8 +35,8 @@ html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)
 .blocks{display:flex;flex-direction:column;gap:14px;transition:transform .28s ease;will-change:transform}
 
 .block-card{
-  background: linear-gradient(180deg, rgba(212,175,55,0.08), rgba(59,42,22,0.08));
-  border: 2px solid var(--accent);
+  background: var(--card);
+  border: 2px solid var(--muted);
   border-radius: 12px;
   padding: 14px;
   display: flex;
@@ -44,20 +49,20 @@ html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)
 .block-subtitle{font-size:13px;color:var(--muted);margin-bottom:6px}
 
 .exercise{display:flex;flex-direction:column;gap:2px}
-.exercise-title{font-weight:600;font-size:14px;color:#ffd700}
+.exercise-title{font-weight:600;font-size:14px;color:var(--accent)}
 .exercise-desc{font-size:12px;color:var(--muted)}
 
-.progress{height:6px;background:rgba(255,255,255,0.05);border-radius:8px;overflow:hidden;margin-top:6px}
-.progress>i{display:block;height:100%;background:linear-gradient(90deg,#d4af37,#ffd700);width:0%}
+.progress{height:6px;background:rgba(0,0,0,0.05);border-radius:8px;overflow:hidden;margin-top:6px}
+.progress>i{display:block;height:100%;background:var(--accent);width:0%}
 
 .video-row{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.video-row video{width:100%;height:auto;border-radius:8px;border:2px solid var(--accent)}
+.video-row video{width:100%;height:auto;border-radius:8px;border:2px solid var(--muted)}
 
-.bottombar{height:72px;padding:10px 12px;background:rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px}
-.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;background:linear-gradient(180deg,#d4af37,#a67c00);color:#2b1e0f;transition:transform 0.15s, box-shadow 0.15s;}
+.bottombar{height:72px;padding:10px 12px;background:rgba(0,0,0,0.05);display:flex;align-items:center;gap:10px}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;background:var(--accent);color:var(--bg);transition:transform 0.15s, box-shadow 0.15s;}
 .btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:700}
 
-.btn:active{transform: scale(0.95); box-shadow: 0 0 12px #ffd700;}
+.btn:active{transform: scale(0.95); box-shadow: 0 0 12px var(--muted);}
 </style>
 </head>
 <body>
@@ -88,7 +93,6 @@ html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)
   <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
 </nav>
 
-<!-- Kiai Sound -->
 <audio id="kiaiSound" src="kiai.mp3" preload="auto"></audio>
 
 <script>
