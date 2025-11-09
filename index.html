@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MTTs Dojo Lab</title>
+<title>MTTs Tricking Lab</title>
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#f5f0e1">
@@ -58,18 +58,17 @@ html,body{height:100%;background:var(--bg);}
 .btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:700}
 .btn:active{transform: scale(0.95); box-shadow: 0 0 12px var(--muted);}
 
-/* Drachen Progress */
-.dragon-progress{width:100%;height:60px;margin:10px 0;position:relative}
-.dragon-body{stroke:#5c4438;stroke-width:6;fill:none;stroke-linecap:round;transition:stroke-dashoffset 0.5s ease}
-.dragon-head{width:20px;height:20px;background:#5c4438;border-radius:50%;position:absolute;top:20px;left:0;}
+/* Klassische Progressbar */
+.progress{height:6px;background:rgba(0,0,0,0.1);border-radius:8px;overflow:hidden;margin:10px 12px}
+.progress > i{display:block;height:100%;background:var(--accent);width:0%;transition:width 0.3s ease}
 </style>
 </head>
 <body>
-<div class="app" role="application" aria-label="MTTs Dojo Lab">
+<div class="app" role="application" aria-label="MTTs Tricking Lab">
 
 <div class="topbar">
   <div>
-    <div class="title">MTTs Dojo Lab</div>
+    <div class="title">MTTs Tricking Lab</div>
     <div class="subtitle small">3× / Woche · ~23 Min · Einbeiniger Pop + Arm Swing</div>
   </div>
   <div style="display:flex;gap:8px;align-items:center">
@@ -83,13 +82,8 @@ html,body{height:100%;background:var(--bg);}
   </div>
 </main>
 
-<!-- Drachen Progress -->
-<div class="dragon-progress">
-  <div class="dragon-head" id="dragonHead"></div>
-  <svg viewBox="0 0 500 50" preserveAspectRatio="none" style="width:100%;height:100%">
-    <path id="dragonBody" d="M0,25 Q125,0 250,25 T500,25" class="dragon-body" stroke-dasharray="500" stroke-dashoffset="500"/>
-  </svg>
-</div>
+<!-- Klassische Progressbar -->
+<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
 
 <nav class="bottombar" role="navigation" aria-label="Steuerung">
   <button id="startBtn" class="btn">Training starten</button>
@@ -109,8 +103,7 @@ const startBtn=document.getElementById('startBtn');
 const nextBtn=document.getElementById('nextBtn');
 const blocksEl=document.getElementById('blocks');
 const timerEl=document.getElementById('timer');
-const dragonBody=document.getElementById('dragonBody');
-const dragonHead=document.getElementById('dragonHead');
+const progressBar=document.getElementById('progressBar');
 
 let currentStep=0;
 let timerInterval=null;
@@ -121,12 +114,9 @@ let elapsedTime=0;
 function formatTime(sec){const m=Math.floor(sec/60).toString().padStart(2,'0');const s=(sec%60).toString().padStart(2,'0');return`${m}:${s}`}
 function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{elapsedTime++;timerEl.textContent=formatTime(elapsedTime);if(elapsedTime>=totalTime) clearInterval(timerInterval);},1000);}
 
-function updateDragonProgress(stepIndex){
-  const progress=(stepIndex+1)/trainingSteps.length;
-  dragonBody.style.strokeDashoffset = 500*(1-progress);
-  // Kopf verschieben
-  const svgWidth=dragonBody.getBBox().width;
-  dragonHead.style.left=`${progress*100}%`;
+function updateProgress(stepIndex){
+  const progressPercent=((stepIndex+1)/trainingSteps.length)*100;
+  progressBar.style.width = progressPercent + "%";
 }
 
 function showStep(stepIndex){
@@ -154,7 +144,7 @@ function showStep(stepIndex){
 
   html+=`</div>`;
   blocksEl.innerHTML=html;
-  updateDragonProgress(stepIndex);
+  updateProgress(stepIndex);
 }
 
 startBtn.addEventListener("click",()=>{
@@ -170,8 +160,7 @@ nextBtn.addEventListener("click",()=>{
     nextBtn.style.display="none";
     startBtn.style.display="block";
     blocksEl.innerHTML="<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
-    dragonBody.style.strokeDashoffset=500;
-    dragonHead.style.left=`0%`;
+    progressBar.style.width="0%";
     timerEl.textContent="00:00";elapsedTime=0;
   }
 });
