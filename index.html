@@ -18,7 +18,6 @@
   --card:#ece3d8;     /* leicht dunkleres Beige */
   --accent:#5c4438;   /* dunkles Braun */
   --muted:#7a6b60;    /* gedämpftes Braun für Untertexte */
-  --glass:rgba(255,255,255,0.3);
 }
 
 *{box-sizing:border-box;font-family:'Noto Sans SC',sans-serif;color:var(--accent);margin:0;padding:0;}
@@ -28,7 +27,7 @@ html,body{height:100%;background:var(--bg);}
 .topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:rgba(0,0,0,0.05);backdrop-filter:blur(4px)}
 .title{font-weight:700;font-size:18px;color:var(--accent)}
 .subtitle{font-size:12px;color:var(--muted)}
-.timer{background:var(--glass);padding:6px 10px;border-radius:10px;font-weight:700;font-size:13px;color:var(--accent)}
+.timer{background:rgba(255,255,255,0.3);padding:6px 10px;border-radius:10px;font-weight:700;font-size:13px;color:var(--accent)}
 
 .pager{flex:1;position:relative;overflow-y:auto;padding:12px}
 .blocks{display:flex;flex-direction:column;gap:14px;transition:transform .28s ease;will-change:transform}
@@ -60,8 +59,9 @@ html,body{height:100%;background:var(--bg);}
 .btn:active{transform: scale(0.95); box-shadow: 0 0 12px var(--muted);}
 
 /* Drachen Progress */
-.dragon-progress{width:100%;height:50px;overflow:hidden;margin:10px 0}
-#dragonPath{stroke-dasharray:500; stroke-dashoffset:500; stroke-linecap:round; stroke-width:6; fill:none; stroke:#5c4438; transition: stroke-dashoffset 0.5s ease;}
+.dragon-progress{width:100%;height:60px;margin:10px 0;position:relative}
+.dragon-body{stroke:#5c4438;stroke-width:6;fill:none;stroke-linecap:round;transition:stroke-dashoffset 0.5s ease}
+.dragon-head{width:20px;height:20px;background:#5c4438;border-radius:50%;position:absolute;top:20px;left:0;}
 </style>
 </head>
 <body>
@@ -85,8 +85,9 @@ html,body{height:100%;background:var(--bg);}
 
 <!-- Drachen Progress -->
 <div class="dragon-progress">
-  <svg viewBox="0 0 500 50" preserveAspectRatio="none">
-    <path id="dragonPath" d="M0,25 Q100,0 200,25 T500,25"/>
+  <div class="dragon-head" id="dragonHead"></div>
+  <svg viewBox="0 0 500 50" preserveAspectRatio="none" style="width:100%;height:100%">
+    <path id="dragonBody" d="M0,25 Q125,0 250,25 T500,25" class="dragon-body" stroke-dasharray="500" stroke-dashoffset="500"/>
   </svg>
 </div>
 
@@ -95,11 +96,7 @@ html,body{height:100%;background:var(--bg);}
   <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
 </nav>
 
-<audio id="kiaiSound" src="kiai.mp3" preload="auto"></audio>
-
 <script>
-const kiaiSound=document.getElementById('kiaiSound');
-
 let trainingSteps=[
   {title:"Warm-Up",duration:180,exercises:[{name:"A-Skip",desc:"2×20 m A-Skips"},{name:"Leg Swings",desc:"10 Leg Swings pro Bein (vor/zurück)"},{name:"Arm Swings",desc:"10 explosive Arm Swings (ohne Gewicht)"}],videos:["askip.mp4"]},
   {title:"Block A – Strength",duration:360,exercises:[{name:"Bulgarian Split Squat",desc:"3 Sätze × 5 pro Bein"},{name:"Info",desc:"Kurzhantel in der Hand der Sprungbein-Seite · Pause 60-90 Sekunden"}],videos:["bulgarian.mp4"]},
@@ -112,7 +109,8 @@ const startBtn=document.getElementById('startBtn');
 const nextBtn=document.getElementById('nextBtn');
 const blocksEl=document.getElementById('blocks');
 const timerEl=document.getElementById('timer');
-const dragonPath=document.getElementById('dragonPath');
+const dragonBody=document.getElementById('dragonBody');
+const dragonHead=document.getElementById('dragonHead');
 
 let currentStep=0;
 let timerInterval=null;
@@ -125,7 +123,10 @@ function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=
 
 function updateDragonProgress(stepIndex){
   const progress=(stepIndex+1)/trainingSteps.length;
-  dragonPath.style.strokeDashoffset = 500*(1-progress);
+  dragonBody.style.strokeDashoffset = 500*(1-progress);
+  // Kopf verschieben
+  const svgWidth=dragonBody.getBBox().width;
+  dragonHead.style.left=`${progress*100}%`;
 }
 
 function showStep(stepIndex){
@@ -156,16 +157,12 @@ function showStep(stepIndex){
   updateDragonProgress(stepIndex);
 }
 
-function playKiai(){kiaiSound.currentTime=0;kiaiSound.play();}
-
 startBtn.addEventListener("click",()=>{
-  playKiai();
   currentStep=0;elapsedTime=0;startTimer();showStep(currentStep);
   startBtn.style.display="none";nextBtn.style.display="block";
 });
 
 nextBtn.addEventListener("click",()=>{
-  playKiai();
   currentStep++;
   if(currentStep<trainingSteps.length){showStep(currentStep)}
   else{
@@ -173,7 +170,8 @@ nextBtn.addEventListener("click",()=>{
     nextBtn.style.display="none";
     startBtn.style.display="block";
     blocksEl.innerHTML="<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
-    dragonPath.style.strokeDashoffset=500;
+    dragonBody.style.strokeDashoffset=500;
+    dragonHead.style.left=`0%`;
     timerEl.textContent="00:00";elapsedTime=0;
   }
 });
