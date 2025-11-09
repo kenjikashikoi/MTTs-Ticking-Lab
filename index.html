@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="de">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MTTs Tricking Lab</title>
 
+  <!-- PWA Manifest & Apple -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="theme-color" content="#B71C1C">
@@ -20,8 +21,8 @@
       --glass:rgba(255,255,255,0.03);
       --height:100vh
     }
-    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6}
-    html,body{height:100%;margin:0;background:linear-gradient(180deg,#151922 0%, #071026 100%)}
+    *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#e6eef6;margin:0;padding:0;}
+    html,body{height:100%;background:linear-gradient(180deg,#151922 0%, #071026 100%)}
     .app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
 
     .topbar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));backdrop-filter:blur(6px)}
@@ -39,94 +40,55 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      flex: 0 0 auto;
     }
-    .block-header{
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-    .block-title{
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .block-meta{
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .block-subtitle{
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 6px;
-    }
-    .exercise{
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .exercise-title{
-      font-weight: 600;
-      font-size: 14px;
-    }
-    .exercise-desc{
-      font-size: 12px;
-      color: var(--muted);
-    }
-    .progress{
-      height: 6px;
-      background: rgba(255,255,255,0.04);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-top: 6px;
-    }
-    .progress > i{
-      display:block;
-      height:100%;
-      background: linear-gradient(90deg,#f59e0b,#f97316);
-      width:0%;
-    }
+    .block-header{display:flex;justify-content:space-between;align-items:flex-start}
+    .block-title{font-size:16px;font-weight:700}
+    .block-meta{font-size:12px;color:var(--muted)}
+    .block-subtitle{font-size:13px;color:var(--muted);margin-bottom:6px}
+    .exercise{display:flex;flex-direction:column;gap:2px}
+    .exercise-title{font-weight:600;font-size:14px}
+    .exercise-desc{font-size:12px;color:var(--muted)}
+    .progress{height:6px;background:rgba(255,255,255,0.04);border-radius:8px;overflow:hidden;margin-top:6px}
+    .progress>i{display:block;height:100%;background:linear-gradient(90deg,#f59e0b,#f97316);width:0%}
 
-    .video-row{display:flex;gap:8px;overflow:auto;padding-top:6px}
-    .thumb{min-width:100px;border-radius:8px;overflow:hidden;background:#000}
-    .thumb video{width:100px;height:72px;display:block}
+    .video-row{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+    .video-row video{width:100%;height:auto;border-radius:8px}
 
     .bottombar{height:72px;padding:10px 12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));display:flex;align-items:center;gap:10px}
     .btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:800;background:linear-gradient(180deg,var(--accent),#d97706);color:#08111a}
     .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted);font-weight:700}
-
-    video{width:100%;border-radius:8px;}
   </style>
 </head>
 <body>
-  <div class="app" role="application" aria-label="MTTs Tricking Lab">
+<div class="app" role="application" aria-label="MTTs Tricking Lab">
 
-    <div class="topbar">
-      <div>
-        <div class="title">MTTs Tricking Lab</div>
-        <div class="subtitle small">3× / Woche · ~23 Min · Einbeiniger Pop + Arm Swing</div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <div id="timer" class="timer">00:00</div>
-      </div>
+  <div class="topbar">
+    <div>
+      <div class="title">MTTs Tricking Lab</div>
+      <div class="subtitle small">3× / Woche · ~23 Min · Einbeiniger Pop + Arm Swing</div>
     </div>
-
-    <main class="pager" id="pager">
-      <div class="blocks" id="blocks">
-        <p>Bereit? Drücke "Training starten" um zu beginnen.</p>
-      </div>
-    </main>
-
-    <div style="padding:10px 12px">
-      <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <div id="timer" class="timer">00:00</div>
     </div>
+  </div>
 
-    <nav class="bottombar" role="navigation" aria-label="Steuerung">
-      <button id="startBtn" class="btn">Training starten</button>
-      <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
-    </nav>
+  <main class="pager" id="pager">
+    <div class="blocks" id="blocks">
+      <p>Bereit? Drücke "Training starten" um zu beginnen.</p>
+    </div>
+  </main>
+
+  <div style="padding:10px 12px">
+    <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+  </div>
+
+  <nav class="bottombar" role="navigation" aria-label="Steuerung">
+    <button id="startBtn" class="btn">Training starten</button>
+    <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
+  </nav>
 
 <script>
-let trainingSteps = [
+let trainingSteps=[
   {title:"Warm-Up",duration:180,exercises:[{name:"A-Skip",desc:"2×20 m A-Skips"},{name:"Leg Swings",desc:"10 Leg Swings pro Bein (vor/zurück)"},{name:"Arm Swings",desc:"10 explosive Arm Swings (ohne Gewicht)"}],videos:["askip.mp4"]},
   {title:"Block A – Strength",duration:360,exercises:[{name:"Bulgarian Split Squat",desc:"3 Sätze × 5 pro Bein"},{name:"Info",desc:"Kurzhantel in der Hand der Sprungbein-Seite · Pause 60-90 Sekunden"}],videos:["bulgarian.mp4"]},
   {title:"Block B – Plyo Pop",duration:480,exercises:[{name:"Explosive Step Up",desc:"3 Sätze × 3 pro Bein (max. Geschwindigkeit)"},{name:"Single Leg Hops",desc:"2 Sätze × 20 m (schnelle Kontakte, nicht hoch)"}],videos:["stepups.mp4"]},
@@ -143,14 +105,10 @@ const timerEl=document.getElementById('timer');
 let currentStep=0;
 let timerInterval=null;
 let totalTime=0;
-trainingSteps.forEach(step=>totalTime+=step.duration);
+trainingSteps.forEach(s=>totalTime+=s.duration);
 let elapsedTime=0;
 
-function formatTime(sec){
-  const m=Math.floor(sec/60).toString().padStart(2,'0');
-  const s=(sec%60).toString().padStart(2,'0');
-  return `${m}:${s}`;
-}
+function formatTime(sec){const m=Math.floor(sec/60).toString().padStart(2,'0');const s=(sec%60).toString().padStart(2,'0');return`${m}:${s}`}
 
 function startTimer(){
   clearInterval(timerInterval);
@@ -164,7 +122,6 @@ function startTimer(){
 function showStep(stepIndex){
   const step=trainingSteps[stepIndex];
   const subTitle=step.exercises.map(e=>e.name.split('(')[0].trim()).join(' · ');
-
   let html=`<div class="block-card">
               <div class="block-header">
                 <div class="block-title">${step.title} (~${Math.ceil(step.duration/60)} min)</div>
@@ -181,47 +138,33 @@ function showStep(stepIndex){
 
   if(step.videos.length>0){
     html+=`<div class="video-row">`;
-    step.videos.forEach(v=>{
-      html+=`<div class="thumb"><video src="${v}" controls></video></div>`;
-    });
+    step.videos.forEach(v=>{html+=`<video src="${v}" controls></video>`});
     html+=`</div>`;
   }
 
-  html+=`<div class="progress"><i style="width:${((stepIndex+1)/trainingSteps.length)*100}%"></i></div>`;
-  html+=`</div>`;
+  html+=`<div class="progress"><i style="width:${((stepIndex+1)/trainingSteps.length)*100}%"></i></div></div>`;
   blocksEl.innerHTML=html;
 }
 
 startBtn.addEventListener("click",()=>{
-  currentStep=0;
-  elapsedTime=0;
-  startTimer();
-  showStep(currentStep);
-  startBtn.style.display="none";
-  nextBtn.style.display="block";
+  currentStep=0;elapsedTime=0;startTimer();showStep(currentStep);
+  startBtn.style.display="none";nextBtn.style.display="block";
 });
 
 nextBtn.addEventListener("click",()=>{
   currentStep++;
-  if(currentStep<trainingSteps.length){
-    showStep(currentStep);
-  }else{
+  if(currentStep<trainingSteps.length){showStep(currentStep)}
+  else{
     alert("Training abgeschlossen!");
     nextBtn.style.display="none";
     startBtn.style.display="block";
     blocksEl.innerHTML="<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
-    progressBar.style.width="0%";
-    timerEl.textContent="00:00";
-    elapsedTime=0;
+    progressBar.style.width="0%";timerEl.textContent="00:00";elapsedTime=0;
   }
 });
 
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.register('service-worker.js')
-    .then(reg=>console.log('Service Worker registered.'))
-    .catch(err=>console.log('SW registration failed:',err));
-  });
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('service-worker.js').then(r=>console.log('SW registered')).catch(e=>console.log('SW failed',e))});
 }
 </script>
 </body>
