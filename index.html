@@ -6,7 +6,10 @@
   <title>MTTs Tricking Lab</title>
 
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
   <meta name="theme-color" content="#B71C1C">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
     :root{
@@ -29,7 +32,6 @@
     .pager{flex:1;position:relative;overflow:hidden;padding:12px}
     .blocks{display:flex;flex-direction:column;gap:14px;transition:transform .28s ease;will-change:transform}
 
-    /* Neues Block-Design */
     .block-card{
       background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
       border-radius: 14px;
@@ -125,147 +127,100 @@
 
 <script>
 let trainingSteps = [
-  {
-    title: "Warm-Up",
-    duration: 180,
-    exercises: [
-      { name: "A-Skip", desc: "2×20 m A-Skips" },
-      { name: "Leg Swings", desc: "10 Leg Swings pro Bein (vor/zurück)" },
-      { name: "Arm Swings", desc: "10 explosive Arm Swings (ohne Gewicht)" }
-    ],
-    videos: ["askip.mp4"]
-  },
-  {
-    title: "Block A – Strength",
-    duration: 360,
-    exercises: [
-      { name: "Bulgarian Split Squat", desc: "3 Sätze × 5 pro Bein" },
-      { name: "Info", desc: "Kurzhantel in der Hand der Sprungbein-Seite · Pause 60-90 Sekunden" }
-    ],
-    videos: ["bulgarian.mp4"]
-  },
-  {
-    title: "Block B – Plyo Pop",
-    duration: 480,
-    exercises: [
-      { name: "Explosive Step Up", desc: "3 Sätze × 3 pro Bein (max. Geschwindigkeit)" },
-      { name: "Single Leg Hops", desc: "2 Sätze × 20 m (schnelle Kontakte, nicht hoch)" }
-    ],
-    videos: ["stepups.mp4"]
-  },
-  {
-    title: "Block C – Arm Swing Power",
-    duration: 180,
-    exercises: [
-      { name: "Explosive Arm Swings", desc: "3×15 (mit 1.5kg an den Handgelenken)" },
-      { name: "Cork Setup Pop", desc: "3×5 (nur Pop, keine Rotation)" }
-    ],
-    videos: []
-  },
-  {
-    title: "Block D – Knee Prehab",
-    duration: 180,
-    exercises: [
-      { name: "Tibialis Raises", desc: "25 Wiederholungen" },
-      { name: "Sissy Knee Drives (kleine Range)", desc: "20 Wiederholungen" },
-      { name: "Calf Eccentrics", desc: "8 pro Bein (einbeinig)" }
-    ],
-    videos: ["tib.mp4","sissy.mp4","calf.mp4"]
-  }
+  {title:"Warm-Up",duration:180,exercises:[{name:"A-Skip",desc:"2×20 m A-Skips"},{name:"Leg Swings",desc:"10 Leg Swings pro Bein (vor/zurück)"},{name:"Arm Swings",desc:"10 explosive Arm Swings (ohne Gewicht)"}],videos:["askip.mp4"]},
+  {title:"Block A – Strength",duration:360,exercises:[{name:"Bulgarian Split Squat",desc:"3 Sätze × 5 pro Bein"},{name:"Info",desc:"Kurzhantel in der Hand der Sprungbein-Seite · Pause 60-90 Sekunden"}],videos:["bulgarian.mp4"]},
+  {title:"Block B – Plyo Pop",duration:480,exercises:[{name:"Explosive Step Up",desc:"3 Sätze × 3 pro Bein (max. Geschwindigkeit)"},{name:"Single Leg Hops",desc:"2 Sätze × 20 m (schnelle Kontakte, nicht hoch)"}],videos:["stepups.mp4"]},
+  {title:"Block C – Arm Swing Power",duration:180,exercises:[{name:"Explosive Arm Swings",desc:"3×15 (mit 1.5kg an den Handgelenken)"},{name:"Cork Setup Pop",desc:"3×5 (nur Pop, keine Rotation)"}],videos:[]},
+  {title:"Block D – Knee Prehab",duration:180,exercises:[{name:"Tibialis Raises",desc:"25 Wiederholungen"},{name:"Sissy Knee Drives (kleine Range)",desc:"20 Wiederholungen"},{name:"Calf Eccentrics",desc:"8 pro Bein (einbeinig)"}],videos:["tib.mp4","sissy.mp4","calf.mp4"]}
 ];
 
-const startBtn = document.getElementById('startBtn');
-const nextBtn = document.getElementById('nextBtn');
-const blocksEl = document.getElementById('blocks');
-const progressBar = document.getElementById('progressBar');
-const timerEl = document.getElementById('timer');
+const startBtn=document.getElementById('startBtn');
+const nextBtn=document.getElementById('nextBtn');
+const blocksEl=document.getElementById('blocks');
+const progressBar=document.getElementById('progressBar');
+const timerEl=document.getElementById('timer');
 
-let currentStep = 0;
-let timerInterval = null;
-let totalTime = 0;
-trainingSteps.forEach(step => totalTime += step.duration);
-let elapsedTime = 0;
+let currentStep=0;
+let timerInterval=null;
+let totalTime=0;
+trainingSteps.forEach(step=>totalTime+=step.duration);
+let elapsedTime=0;
 
 function formatTime(sec){
-  const m = Math.floor(sec/60).toString().padStart(2,'0');
-  const s = (sec%60).toString().padStart(2,'0');
+  const m=Math.floor(sec/60).toString().padStart(2,'0');
+  const s=(sec%60).toString().padStart(2,'0');
   return `${m}:${s}`;
 }
 
 function startTimer(){
   clearInterval(timerInterval);
-  timerInterval = setInterval(()=>{
+  timerInterval=setInterval(()=>{
     elapsedTime++;
-    timerEl.textContent = formatTime(elapsedTime);
-    if(elapsedTime >= totalTime){
-      clearInterval(timerInterval);
-    }
+    timerEl.textContent=formatTime(elapsedTime);
+    if(elapsedTime>=totalTime) clearInterval(timerInterval);
   },1000);
 }
 
 function showStep(stepIndex){
-  const step = trainingSteps[stepIndex];
-  
-  // Zusammenfassung aller Übungsnamen für Untertitel
-  const subTitle = step.exercises.map(e=>e.name.split('(')[0].trim()).join(' · ');
+  const step=trainingSteps[stepIndex];
+  const subTitle=step.exercises.map(e=>e.name.split('(')[0].trim()).join(' · ');
 
-  let html = `<div class="block-card">
-                <div class="block-header">
-                  <div class="block-title">${step.title} (~${Math.ceil(step.duration/60)} min)</div>
-                  <div class="block-meta">Block ${stepIndex+1}/${trainingSteps.length} — ~${Math.ceil(step.duration/60)} min</div>
-                </div>
-                <div class="block-subtitle">${subTitle}</div>`;
+  let html=`<div class="block-card">
+              <div class="block-header">
+                <div class="block-title">${step.title} (~${Math.ceil(step.duration/60)} min)</div>
+                <div class="block-meta">Block ${stepIndex+1}/${trainingSteps.length} — ~${Math.ceil(step.duration/60)} min</div>
+              </div>
+              <div class="block-subtitle">${subTitle}</div>`;
 
-  step.exercises.forEach(ex => {
-    html += `<div class="exercise">
-               <div class="exercise-title">${ex.name}</div>
-               <div class="exercise-desc">${ex.desc}</div>
-             </div>`;
+  step.exercises.forEach(ex=>{
+    html+=`<div class="exercise">
+             <div class="exercise-title">${ex.name}</div>
+             <div class="exercise-desc">${ex.desc}</div>
+           </div>`;
   });
 
-  if(step.videos.length > 0){
-    html += `<div class="video-row">`;
-    step.videos.forEach(v => {
-      html += `<div class="thumb"><video src="${v}" controls></video></div>`;
+  if(step.videos.length>0){
+    html+=`<div class="video-row">`;
+    step.videos.forEach(v=>{
+      html+=`<div class="thumb"><video src="${v}" controls></video></div>`;
     });
-    html += `</div>`;
+    html+=`</div>`;
   }
 
-  html += `<div class="progress"><i style="width:${((stepIndex+1)/trainingSteps.length)*100}%"></i></div>`;
-  html += `</div>`;
-
-  blocksEl.innerHTML = html;
+  html+=`<div class="progress"><i style="width:${((stepIndex+1)/trainingSteps.length)*100}%"></i></div>`;
+  html+=`</div>`;
+  blocksEl.innerHTML=html;
 }
 
-startBtn.addEventListener("click", ()=>{
-  currentStep = 0;
-  elapsedTime = 0;
+startBtn.addEventListener("click",()=>{
+  currentStep=0;
+  elapsedTime=0;
   startTimer();
   showStep(currentStep);
-  startBtn.style.display = "none";
-  nextBtn.style.display = "block";
+  startBtn.style.display="none";
+  nextBtn.style.display="block";
 });
 
-nextBtn.addEventListener("click", ()=>{
+nextBtn.addEventListener("click",()=>{
   currentStep++;
-  if(currentStep < trainingSteps.length){
+  if(currentStep<trainingSteps.length){
     showStep(currentStep);
-  } else {
+  }else{
     alert("Training abgeschlossen!");
-    nextBtn.style.display = "none";
-    startBtn.style.display = "block";
-    blocksEl.innerHTML = "<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
-    progressBar.style.width = "0%";
-    timerEl.textContent = "00:00";
-    elapsedTime = 0;
+    nextBtn.style.display="none";
+    startBtn.style.display="block";
+    blocksEl.innerHTML="<p>Bereit? Drücke \"Training starten\" um zu beginnen.</p>";
+    progressBar.style.width="0%";
+    timerEl.textContent="00:00";
+    elapsedTime=0;
   }
 });
 
 if('serviceWorker' in navigator){
-  window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('service-worker.js').then(reg=>{
-      console.log('Service Worker registered.');
-    }).catch(err=>console.log('SW registration failed:', err));
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('service-worker.js')
+    .then(reg=>console.log('Service Worker registered.'))
+    .catch(err=>console.log('SW registration failed:',err));
   });
 }
 </script>
