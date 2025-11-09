@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tricking-lab-cache-v2';
+const CACHE_NAME = 'tricking-lab-cache-v1';
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
@@ -13,37 +13,26 @@ const FILES_TO_CACHE = [
   '/icon-512.png'
 ];
 
-self.addEventListener('install', (evt) => {
+self.addEventListener('install', evt => {
   evt.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log('[ServiceWorker] Pre-caching offline resources');
-      return cache.addAll(FILES_TO_CACHE);
-    })
+    caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
   );
   self.skipWaiting();
 });
 
-self.addEventListener('activate', (evt) => {
+self.addEventListener('activate', evt => {
   evt.waitUntil(
-    caches.keys().then((keyList) => {
-      return Promise.all(
-        keyList.map((key) => {
-          if(key !== CACHE_NAME) {
-            console.log('[ServiceWorker] Removing old cache', key);
-            return caches.delete(key);
-          }
-        })
-      );
-    })
+    caches.keys().then(keys => Promise.all(
+      keys.map(key => {
+        if(key !== CACHE_NAME) return caches.delete(key);
+      })
+    ))
   );
   self.clients.claim();
 });
 
-self.addEventListener('fetch', (evt) => {
+self.addEventListener('fetch', evt => {
   evt.respondWith(
-    caches.match(evt.request).then((response) => {
-      return response || fetch(evt.request);
-    })
+    caches.match(evt.request).then(response => response || fetch(evt.request))
   );
 });
-
