@@ -5,25 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MTTs Dojo Lab</title>
 
-<!-- PWA Manifest & Apple -->
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#2b1e0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-<!-- Google Font: Noto Sans SC für Dojo-Flair -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#2b1e0f;       /* dunkles Holz */
-  --card:#3b2a16;     /* helleres Holz */
-  --accent:#d4af37;   /* Gold */
-  --muted:#f5e3c0;    /* Pergament */
-  --glass:rgba(255,255,255,0.05);
+  --bg:#2b1e0f; --card:#3b2a16; --accent:#d4af37; --muted:#f5e3c0; --glass:rgba(255,255,255,0.05);
 }
-
 *{box-sizing:border-box;font-family:'Noto Sans SC',sans-serif;color:var(--muted);margin:0;padding:0;}
 html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)}
 .app{max-width:430px;margin:0 auto;height:100vh;display:flex;flex-direction:column}
@@ -58,11 +51,13 @@ html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)
 .progress>i{display:block;height:100%;background:linear-gradient(90deg,#d4af37,#ffd700);width:0%}
 
 .video-row{display:flex;flex-direction:column;gap:8px;margin-top:6px}
-.video-row video{width:100%;max-height:180px;height:auto;border-radius:8px;border:2px solid var(--accent)}
+.video-row video{width:100%;height:auto;border-radius:8px;border:2px solid var(--accent)}
 
 .bottombar{height:72px;padding:10px 12px;background:rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px}
-.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;background:linear-gradient(180deg,#d4af37,#a67c00);color:#2b1e0f}
+.btn{flex:1;padding:12px;border-radius:12px;border:none;font-weight:700;background:linear-gradient(180deg,#d4af37,#a67c00);color:#2b1e0f;transition:transform 0.15s, box-shadow 0.15s;}
 .btn.ghost{background:transparent;border:1px solid var(--accent);color:var(--accent);font-weight:700}
+
+.btn:active{transform: scale(0.95); box-shadow: 0 0 12px #ffd700;}
 </style>
 </head>
 <body>
@@ -93,7 +88,12 @@ html,body{height:100%;background:linear-gradient(180deg,#3b2a16 0%,#2b1e0f 100%)
   <button id="nextBtn" class="btn ghost" style="display:none">Nächstes</button>
 </nav>
 
+<!-- Kiai Sound -->
+<audio id="kiaiSound" src="kiai.mp3" preload="auto"></audio>
+
 <script>
+const kiaiSound=document.getElementById('kiaiSound');
+
 let trainingSteps=[
   {title:"Warm-Up",duration:180,exercises:[{name:"A-Skip",desc:"2×20 m A-Skips"},{name:"Leg Swings",desc:"10 Leg Swings pro Bein (vor/zurück)"},{name:"Arm Swings",desc:"10 explosive Arm Swings (ohne Gewicht)"}],videos:["askip.mp4"]},
   {title:"Block A – Strength",duration:360,exercises:[{name:"Bulgarian Split Squat",desc:"3 Sätze × 5 pro Bein"},{name:"Info",desc:"Kurzhantel in der Hand der Sprungbein-Seite · Pause 60-90 Sekunden"}],videos:["bulgarian.mp4"]},
@@ -116,14 +116,7 @@ let elapsedTime=0;
 
 function formatTime(sec){const m=Math.floor(sec/60).toString().padStart(2,'0');const s=(sec%60).toString().padStart(2,'0');return`${m}:${s}`}
 
-function startTimer(){
-  clearInterval(timerInterval);
-  timerInterval=setInterval(()=>{
-    elapsedTime++;
-    timerEl.textContent=formatTime(elapsedTime);
-    if(elapsedTime>=totalTime) clearInterval(timerInterval);
-  },1000);
-}
+function startTimer(){clearInterval(timerInterval);timerInterval=setInterval(()=>{elapsedTime++;timerEl.textContent=formatTime(elapsedTime);if(elapsedTime>=totalTime) clearInterval(timerInterval);},1000);}
 
 function showStep(stepIndex){
   const step=trainingSteps[stepIndex];
@@ -152,12 +145,16 @@ function showStep(stepIndex){
   blocksEl.innerHTML=html;
 }
 
+function playKiai(){kiaiSound.currentTime=0;kiaiSound.play();}
+
 startBtn.addEventListener("click",()=>{
+  playKiai();
   currentStep=0;elapsedTime=0;startTimer();showStep(currentStep);
   startBtn.style.display="none";nextBtn.style.display="block";
 });
 
 nextBtn.addEventListener("click",()=>{
+  playKiai();
   currentStep++;
   if(currentStep<trainingSteps.length){showStep(currentStep)}
   else{
