@@ -1,11 +1,11 @@
 {
   "name": "MTTs Tricking Lab",
-  "short_name": "TrickingLab",
-  "description": "Tricking Training App",
+  "short_name": "Tricking Lab",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#071026",
   "theme_color": "#B71C1C",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "icons/icon-192.png",
